@@ -24,6 +24,11 @@ body {
   cursor: none;
 }
 
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
 /* --- Header & Nav --- */
 header {
   position: fixed;
@@ -362,3 +367,58 @@ nav a:hover { color: white; }
 
 .blob { position: absolute; width: 400px; height: 400px; background: linear-gradient(to right, var(--primary), var(--secondary)); filter: blur(120px); opacity: 0.2; animation: blobMove 10s infinite alternate; z-index: -1; }
 @keyframes blobMove { from { transform: translate(-20%, -20%); } to { transform: translate(20%, 20%); } }
+
+/* ============================= */
+/* ===== MOBILE SCREEN FIX ===== */
+/* ============================= */
+
+@media (max-width: 768px) {
+
+  /* Remove large side paddings */
+  .hero {
+    padding: 0 20px;
+  }
+
+  .section {
+    padding: 80px 20px;
+  }
+
+  /* Fix grid breaking on small phones */
+  .project-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Reduce large card padding */
+  .card {
+    padding: 25px;
+  }
+
+  /* Prevent buttons overflowing */
+  .hero-btns {
+    flex-direction: column;
+    gap: 15px;
+  }
+
+  .btn {
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Reduce big headings */
+  .section h2 {
+    font-size: 2rem;
+  }
+
+  /* Fix navigation spacing */
+  header {
+    width: calc(100% - 20px);
+    padding: 12px 20px;
+  }
+
+  /* Fix blob overflow */
+  .blob {
+    width: 250px;
+    height: 250px;
+  }
+
+}
