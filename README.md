@@ -13,28 +13,44 @@ It demonstrates how a professional personal website should look and function on 
 🛠️ Technologies Used :
 
 •HTML – Website structure.
+
 •CSS – Styling and responsive layout.
+
 •JavaScript – Interactive elements and smooth navigation.
 
 ✨ Features :
 
 👤 About Me section
+
 💻 Skills showcase
+
 🎓 Education details
+
 📂 Projects section
+
 📞 Contact information section
+
 📱 Fully responsive design
+
 🎨 Clean and modern UI
+
 ⚡ JavaScript-based interactivity
+
 
 📌 Sections Included :
 
 •About
+
 •Skills
+
 •Education
+
 •Projects
+
 •Contact
 
-🌐 # Portfolio Link 🔗 https://syedalthaf-portfolio.netlify.app
+
+🌐 # Portfolio Link 🔗
+ https://syedalthaf-portfolio.netlify.app
 
 👨‍💻 Syed Althaf Ali
