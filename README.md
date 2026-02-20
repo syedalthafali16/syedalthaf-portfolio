@@ -54,8 +54,8 @@ It highlights my technical skills, educational background, and selected projects
 
 ---
 
-🌐 [Live Demo]
-(https://syedalthaf-portfolio.netlify.app)
+🌐
+🌐[![Live Demo](https://img.shields.io/badge/Live%20Demo-View%20Website-brightgreen?style=for-the-badge&logo=google-chrome)](https://syedalthaf-portfolio.netlify.app)
 
 ---
 
