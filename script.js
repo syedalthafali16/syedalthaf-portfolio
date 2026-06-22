@@ -1,18 +1,201 @@
 // ============================================
 // MODERN PORTFOLIO - COMPLETE JAVASCRIPT
 // Theme Toggle | Mobile Menu | Typing Effects
-// Swiper Slider | Scroll Reveal | Smooth Scroll
+// Infinity Typing Lines | Scroll Reveal
 // Robot Animation | Progress Bars | Active Nav
 // ============================================
 
-// Wait for DOM to be fully loaded
+(function() {
+  'use strict';
+
+  // ----- DOM REFS -----
+  const intro = document.getElementById('intro');
+  const scenes = document.querySelectorAll('.scene');
+  const portfolio = document.getElementById('portfolio');
+  const loadingBar = document.getElementById('loading-bar');
+  const loadingPercent = document.getElementById('loading-percent');
+  const loadingContainer = document.getElementById('loading-container');
+
+  let currentScene = 0;
+  const sceneCount = scenes.length;
+  let isAnimating = false;
+  let timer = null;
+  let introCompleted = false;
+  let loadingComplete = false;
+
+  // ----- LOADING PROGRESS -----
+  let progress = 0;
+  const totalDuration = 7500;
+  const startTime = Date.now();
+
+  function updateLoading() {
+    const elapsed = Date.now() - startTime;
+    progress = Math.min(elapsed / totalDuration, 1);
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const percent = Math.round(eased * 100);
+    
+    if (loadingBar) loadingBar.style.width = percent + '%';
+    if (loadingPercent) loadingPercent.textContent = percent + '%';
+
+    if (progress < 1) {
+      requestAnimationFrame(updateLoading);
+    } else {
+      if (loadingBar) loadingBar.style.width = '100%';
+      if (loadingPercent) loadingPercent.textContent = '100%';
+      
+      if (!loadingComplete) {
+        loadingComplete = true;
+        hideLoadingBar();
+      }
+    }
+  }
+
+  // ----- Hide Loading Bar Function -----
+  function hideLoadingBar() {
+    if (loadingContainer) {
+      loadingContainer.style.opacity = '0';
+      loadingContainer.style.transition = 'opacity 0.5s ease';
+      setTimeout(() => {
+        loadingContainer.style.display = 'none';
+      }, 500);
+    }
+  }
+
+  // ----- SCENE TRANSITION -----
+  function transitionToScene(index) {
+    if (isAnimating) return;
+    if (index >= sceneCount) {
+      finishIntro();
+      return;
+    }
+
+    isAnimating = true;
+
+    scenes.forEach((s, i) => {
+      if (i === currentScene) {
+        s.classList.remove('active');
+      }
+    });
+
+    setTimeout(() => {
+      currentScene = index;
+      scenes[currentScene].classList.add('active');
+
+      // FIXED: use .intro-text instead of .hero-text
+      const text = scenes[currentScene].querySelector('.intro-text');
+      if (text) {
+        text.style.animation = 'none';
+        void text.offsetHeight;
+        const sceneId = scenes[currentScene].id;
+        if (sceneId === 'scene-1') {
+          text.style.animation = 'scene1Reveal 1.4s cubic-bezier(0.23, 1, 0.32, 1) forwards';
+        } else if (sceneId === 'scene-2') {
+          text.style.animation = 'scene2Reveal 1.4s cubic-bezier(0.23, 1, 0.32, 1) forwards';
+        } else if (sceneId === 'scene-3') {
+          text.style.animation = 'scene3Reveal 1.4s cubic-bezier(0.23, 1, 0.32, 1) forwards';
+        }
+      }
+
+      isAnimating = false;
+
+      const sceneId = scenes[currentScene].id;
+      let duration = 1600;
+      if (sceneId === 'scene-1') duration = 1800;
+      if (sceneId === 'scene-2') duration = 1600;
+      if (sceneId === 'scene-3') duration = 1700;
+
+      timer = setTimeout(() => {
+        transitionToScene(currentScene + 1);
+      }, duration);
+
+    }, 700);
+  }
+
+  // ----- FINISH INTRO -----
+  function finishIntro() {
+    if (introCompleted) return;
+    introCompleted = true;
+
+    if (timer) clearTimeout(timer);
+    
+    if (intro) intro.classList.add('fade-out');
+    
+    setTimeout(() => {
+      if (portfolio) portfolio.classList.add('visible');
+      if (intro) intro.style.display = 'none';
+      
+      if (!loadingComplete) {
+        loadingComplete = true;
+        hideLoadingBar();
+      }
+    }, 1200);
+  }
+
+  // ----- START -----
+  setTimeout(() => {
+    transitionToScene(0);
+    updateLoading();
+  }, 400);
+
+  // ----- SKIP FUNCTIONALITY -----
+  function skipToPortfolio() {
+    if (introCompleted) return;
+    if (intro && !intro.classList.contains('fade-out')) {
+      if (timer) clearTimeout(timer);
+      introCompleted = true;
+      
+      intro.classList.add('fade-out');
+      setTimeout(() => {
+        if (portfolio) portfolio.classList.add('visible');
+        if (intro) intro.style.display = 'none';
+        
+        if (!loadingComplete) {
+          loadingComplete = true;
+          hideLoadingBar();
+        }
+      }, 1200);
+    }
+  }
+
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('a') || e.target.closest('button')) return;
+    if (portfolio && !portfolio.classList.contains('visible') && !introCompleted) {
+      skipToPortfolio();
+    }
+  });
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      if (portfolio && !portfolio.classList.contains('visible') && !introCompleted) {
+        e.preventDefault();
+        skipToPortfolio();
+      }
+    }
+  });
+
+  // Safety fallback
+  setTimeout(() => {
+    if (!loadingComplete) {
+      loadingComplete = true;
+      hideLoadingBar();
+    }
+    if (portfolio && !portfolio.classList.contains('visible')) {
+      skipToPortfolio();
+    }
+  }, 10000);
+
+})();
+
+
+// ============================================================
+//  DOM CONTENT LOADED — MAIN FUNCTIONALITY
+// ============================================================
 document.addEventListener('DOMContentLoaded', function() {
 
   // ===== DARK/LIGHT MODE TOGGLE =====
   const themeToggle = document.getElementById('themeToggle');
   const body = document.body;
   
-  // Function to apply theme
   function applyTheme(theme) {
     if (theme === 'light') {
       body.classList.add('light-mode');
@@ -31,24 +214,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   }
   
-  // Check for saved theme preference
   const savedTheme = localStorage.getItem('portfolio_theme');
+  applyTheme(savedTheme === 'light' ? 'light' : 'dark');
   
-  if (savedTheme === 'light') {
-    applyTheme('light');
-  } else {
-    applyTheme('dark');
-  }
-  
-  // Theme Toggle Button Click
   if (themeToggle) {
     themeToggle.addEventListener('click', function(e) {
       e.preventDefault();
-      if (body.classList.contains('dark-mode')) {
-        applyTheme('light');
-      } else {
-        applyTheme('dark');
-      }
+      applyTheme(body.classList.contains('dark-mode') ? 'light' : 'dark');
     });
   }
 
@@ -67,9 +239,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
     
-    // Close menu when clicking a link
-    const navLinks = navMenu.querySelectorAll('a');
-    navLinks.forEach(link => {
+    navMenu.querySelectorAll('a').forEach(link => {
       link.addEventListener('click', function() {
         navMenu.classList.remove('active');
         const icon = menuToggle.querySelector('i');
@@ -80,7 +250,6 @@ document.addEventListener('DOMContentLoaded', function() {
       });
     });
     
-    // Close menu when clicking outside
     document.addEventListener('click', function(e) {
       if (window.innerWidth <= 768) {
         if (!navMenu.contains(e.target) && !menuToggle.contains(e.target)) {
@@ -95,22 +264,19 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
   
-  // Close mobile menu on window resize
   window.addEventListener('resize', function() {
-    if (window.innerWidth > 768) {
-      if (navMenu && navMenu.classList.contains('active')) {
-        navMenu.classList.remove('active');
-        const icon = menuToggle?.querySelector('i');
-        if (icon) {
-          icon.classList.add('fa-bars');
-          icon.classList.remove('fa-times');
-        }
+    if (window.innerWidth > 768 && navMenu && navMenu.classList.contains('active')) {
+      navMenu.classList.remove('active');
+      const icon = menuToggle?.querySelector('i');
+      if (icon) {
+        icon.classList.add('fa-bars');
+        icon.classList.remove('fa-times');
       }
     }
   });
 
   // ===== Typing Animation for Hero Section =====
-  const words = ['Full Stack Developer',  'Python Developer',  'Software Developer', 'Problem Solver'];
+  const words = ['Full Stack Developer', 'Python Developer', 'Software Developer', 'Problem Solver'];
   let wordIndex = 0;
   let charIndex = 0;
   let isDeleting = false;
@@ -146,7 +312,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // ===== About Section Typing Effect =====
   const aboutTypingElement = document.querySelector('.about-typing');
   if (aboutTypingElement) {
-    const aboutWords = [ ' Software Developer', ' Aspiring Full Stack Developer', ' Backend Developer', ' Flask Developer', ' Problem Solver', ' API Builder', ' Tech Enthusiast' ];
+    const aboutWords = ['Software Developer', 'Full Stack Developer', 'Backend Developer', 'Flask Developer', 'Problem Solver', 'API Builder'];
     let aboutWordIndex = 0;
     let aboutCharIndex = 0;
     let aboutIsDeleting = false;
@@ -177,9 +343,67 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(aboutTypeEffect, 1000);
   }
 
-  // ===== Scroll Reveal Animation =====
-  const revealElements = document.querySelectorAll('.reveal');
-  
+
+  // ============================================================
+  //  INFINITY TYPING LINES — for project cards
+  // ============================================================
+  const typingLines = document.querySelectorAll('.typing-line');
+
+  typingLines.forEach(function(line) {
+    const textsAttr = line.getAttribute('data-texts');
+    if (!textsAttr) return;
+
+    const phrases = textsAttr.split('|').map(s => s.trim());
+    let currentPhraseIndex = 0;
+    let currentCharIndex = 0;
+    let isDeletingLine = false;
+    let lineInterval = null;
+
+    function typeLine() {
+      const currentPhrase = phrases[currentPhraseIndex];
+      if (!currentPhrase) return;
+
+      // Build the display text
+      if (isDeletingLine) {
+        line.textContent = currentPhrase.substring(0, currentCharIndex - 1);
+        currentCharIndex--;
+      } else {
+        line.textContent = currentPhrase.substring(0, currentCharIndex + 1);
+        currentCharIndex++;
+      }
+
+      // Decide next step
+      if (!isDeletingLine && currentCharIndex === currentPhrase.length) {
+        // Full phrase typed → pause then delete
+        isDeletingLine = true;
+        clearTimeout(lineInterval);
+        lineInterval = setTimeout(typeLine, 1800);
+        return;
+      }
+
+      if (isDeletingLine && currentCharIndex === 0) {
+        // Fully deleted → move to next phrase
+        isDeletingLine = false;
+        currentPhraseIndex = (currentPhraseIndex + 1) % phrases.length;
+        clearTimeout(lineInterval);
+        lineInterval = setTimeout(typeLine, 400);
+        return;
+      }
+
+      // Continue typing/deleting
+      const delay = isDeletingLine ? 60 : 100;
+      clearTimeout(lineInterval);
+      lineInterval = setTimeout(typeLine, delay);
+    }
+
+    // Start the infinity loop for this line
+    lineInterval = setTimeout(typeLine, 300);
+  });
+
+
+  // ============================================================
+  //  SCROLL REVEAL ANIMATION
+  // ============================================================
   const revealObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -190,11 +414,16 @@ document.addEventListener('DOMContentLoaded', function() {
     threshold: 0.15,
     rootMargin: "0px 0px -50px 0px"
   });
-  
-  revealElements.forEach(el => revealObserver.observe(el));
-  
-  // Add reveal class to sections
-  const sectionsToReveal = document.querySelectorAll('.section, .hero-content, .about-grid, .skills-grid, .education-grid, .project-slider, .contact-box');
+
+  // Observe existing .reveal elements
+  document.querySelectorAll('.reveal').forEach(el => revealObserver.observe(el));
+
+  // Auto-reveal sections (without .reveal class)
+  const sectionsToReveal = document.querySelectorAll(
+    '.section, .hero-content, .about-grid, .skills-grid, ' +
+    '.education-list, .experience-list, .contact-box, ' +
+    '.projects-categories, .category-section'
+  );
   sectionsToReveal.forEach(el => {
     if (!el.classList.contains('reveal')) {
       el.classList.add('reveal');
@@ -202,12 +431,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // ===== Smooth Scroll for Navigation Links (Fixed - No Blink) =====
-  const allNavLinks = document.querySelectorAll('a[href^="#"]');
+  // ===== Smooth Scroll for Navigation Links =====
   const header = document.querySelector('header');
   const headerHeight = header ? header.offsetHeight : 80;
   
-  allNavLinks.forEach(anchor => {
+  document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
       const href = this.getAttribute('href');
       if (href === "#" || href === "" || href === "#home") return;
@@ -215,64 +443,20 @@ document.addEventListener('DOMContentLoaded', function() {
       const targetElement = document.querySelector(href);
       if (targetElement) {
         e.preventDefault();
-        
-        // Get element position
         const elementPosition = targetElement.getBoundingClientRect().top;
         const offsetPosition = elementPosition + window.pageYOffset - headerHeight + 10;
         
-        // Smooth scroll with native behavior
         window.scrollTo({
           top: offsetPosition,
           behavior: 'smooth'
         });
         
-        // Update URL without causing jump
         history.pushState(null, null, href);
       }
     });
   });
 
-  // ===== Initialize Swiper Slider =====
-  if (typeof Swiper !== 'undefined') {
-    const swiperContainer = document.querySelector('.project-slider');
-    if (swiperContainer) {
-      setTimeout(() => {
-        const swiper = new Swiper('.project-slider', {
-          slidesPerView: 1,
-          spaceBetween: 30,
-          loop: true,
-          autoplay: {
-            delay: 4000,
-            disableOnInteraction: false,
-            pauseOnMouseEnter: true,
-          },
-          pagination: {
-            el: '.swiper-pagination',
-            clickable: true,
-            dynamicBullets: true,
-          },
-          navigation: {
-            nextEl: '.swiper-button-next',
-            prevEl: '.swiper-button-prev',
-          },
-          breakpoints: {
-            640: { slidesPerView: 1, spaceBetween: 20 },
-            768: { slidesPerView: 2, spaceBetween: 25 },
-            1024: { slidesPerView: 2, spaceBetween: 30 },
-          },
-          effect: 'slide',
-          speed: 600,
-          grabCursor: true,
-        });
-        
-        window.addEventListener('resize', () => swiper.update());
-      }, 100);
-    }
-  }
-
   // ===== Progress Bar Animation =====
-  const progressBars = document.querySelectorAll('.progress-fill');
-  
   const progressObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -285,7 +469,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }, { threshold: 0.5 });
   
-  progressBars.forEach(bar => progressObserver.observe(bar));
+  document.querySelectorAll('.progress-fill').forEach(bar => progressObserver.observe(bar));
 
   // ===== Set Current Year =====
   const yearSpan = document.getElementById('year');
@@ -324,8 +508,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // ===== Force reveal on load =====
   setTimeout(() => {
-    const allReveal = document.querySelectorAll('.reveal');
-    allReveal.forEach(el => {
+    document.querySelectorAll('.reveal').forEach(el => {
       const rect = el.getBoundingClientRect();
       if (rect.top < window.innerHeight - 50) {
         el.classList.add('active');
@@ -333,84 +516,73 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }, 200);
   
-  // Add loaded class
   window.addEventListener('load', function() {
     document.body.classList.add('loaded');
   });
 
-  // ===== Robot/Animation Mouse Move Effect =====
+  // ===== Robot Animation Mouse Move Effect =====
   const robot = document.querySelector(".hero-animation");
-  
   if (robot) {
     document.addEventListener("mousemove", (e) => {
-      // Calculate mouse position relative to center of screen
       const mouseX = e.clientX / window.innerWidth;
       const mouseY = e.clientY / window.innerHeight;
       
-      // Calculate movement range (max 30px in each direction)
       const moveX = (mouseX - 0.5) * 30;
       const moveY = (mouseY - 0.5) * 30;
       
-      // Apply smooth transform
       robot.style.transform = `translate(${moveX}px, ${moveY}px)`;
       robot.style.transition = 'transform 0.1s ease-out';
     });
     
-    // Reset position when mouse leaves window
     document.addEventListener("mouseleave", () => {
       robot.style.transform = `translate(0px, 0px)`;
     });
   }
 
-  // ===== Fix for Lottie Player on Mobile =====
+  // ===== Lottie Player Responsive Sizing =====
   const lottiePlayer = document.querySelector('dotlottie-player');
-  if (lottiePlayer && window.innerWidth <= 768) {
-    lottiePlayer.setAttribute('style', 'width: 220px; height: 220px; max-width: 100%;');
-  }
-  
-  // ===== Handle window resize for lottie player =====
-  window.addEventListener('resize', function() {
-    if (lottiePlayer) {
-      if (window.innerWidth <= 480) {
-        lottiePlayer.setAttribute('style', 'width: 180px; height: 180px; max-width: 100%;');
-      } else if (window.innerWidth <= 768) {
-        lottiePlayer.setAttribute('style', 'width: 220px; height: 220px; max-width: 100%;');
-      } else {
-        lottiePlayer.setAttribute('style', 'width: 400px; height: 400px; max-width: 100%;');
-      }
+  if (lottiePlayer) {
+    function updateLottieSize() {
+      let w = 400;
+      if (window.innerWidth <= 480) w = 180;
+      else if (window.innerWidth <= 768) w = 220;
+      lottiePlayer.setAttribute('style', `width: ${w}px; height: ${w}px; max-width: 100%;`);
     }
-  });
+    updateLottieSize();
+    window.addEventListener('resize', updateLottieSize);
+  }
 
-  // ===== Prevent scrollbar shift on page load =====
+  // ===== Prevent scrollbar shift =====
   const scrollbarWidth = window.innerWidth - document.documentElement.clientWidth;
   if (scrollbarWidth > 0) {
     document.body.style.marginRight = '0px';
   }
 
-  // ===== Add smooth reveal for initial content =====
+  // ===== Hero reveal =====
   const heroContent = document.querySelector('.hero-content');
   if (heroContent && !heroContent.classList.contains('reveal')) {
     heroContent.classList.add('reveal');
-    setTimeout(() => {
-      heroContent.classList.add('active');
-    }, 100);
+    setTimeout(() => heroContent.classList.add('active'), 100);
   }
 });
 
-// ===== Handle page load performance =====
+
+// ============================================================
+//  PAGE LOAD — visibility + hero min-height
+// ============================================================
 window.addEventListener('load', function() {
-  // Remove any preloader if exists
   document.body.style.visibility = 'visible';
   
-  // Fix any height issues with sections
   const hero = document.querySelector('.hero');
   if (hero) {
-    const minHeight = window.innerHeight - 100;
-    hero.style.minHeight = `${minHeight}px`;
+    hero.style.minHeight = `${window.innerHeight - 100}px`;
   }
 });
 
-// ===== Smooth scroll fix for Safari =====
+
+// ============================================================
+//  SAFARI SMOOTH SCROLL FIX
+// ============================================================
 if (navigator.userAgent.includes('Safari') && !navigator.userAgent.includes('Chrome')) {
   document.querySelectorAll('a[href^="#"]').forEach(anchor => {
     anchor.addEventListener('click', function(e) {
