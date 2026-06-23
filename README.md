@@ -1,7 +1,7 @@
 # 🌐 Syed Althaf Ali – Personal Portfolio Website
 
 **Syed Althaf Ali Portfolio** is a modern and responsive **frontend personal portfolio website** built using **HTML, CSS, and JavaScript**.  
-This project focuses on presenting my profile, skills, education, and projects in a clean and professional layout.
+This project focuses on presenting my profile, skills, experience, education, and projects in a clean and professional layout.
 
 ---
 
@@ -10,22 +10,22 @@ This project focuses on presenting my profile, skills, education, and projects i
 This portfolio website is designed to showcase my journey as a developer.  
 It highlights my technical skills, educational background, and selected projects in a structured and visually appealing format.
 
-> ⚠️ Note: This project is purely a frontend design. No backend or database functionality is implemented.
-
 ---
 
 ## 🛠️ Technologies Used
 
 - **HTML** – Website structure  
 - **CSS** – Styling and responsive layout  
-- **JavaScript** – Interactive elements   
+- **JavaScript** – Interactive elements 
+- **Netlify** - Deploy website 
 
 ---
 
 ## ✨ Features
 
 - 👤 About Me section  
-- 💻 Skills showcase  
+- 💻 Skills showcase 
+- 👨🏻‍💼 Experience 
 - 🎓 Education details  
 - 📂 Projects display section  
 - 📞 Contact information section  
@@ -39,6 +39,7 @@ It highlights my technical skills, educational background, and selected projects
 
 - About  
 - Skills  
+- Experience 
 - Education  
 - Projects  
 - Contact  
