@@ -132,10 +132,10 @@
   }
 
   // ----- START -----
-  setTimeout(() => {
-    transitionToScene(0);
-    updateLoading();
-  }, 400);
+  updateLoading();
+    timer = setTimeout(() => {
+      transitionToScene(1);
+  }, 1800);
 
   // ----- SKIP FUNCTIONALITY -----
   function skipToPortfolio() {
